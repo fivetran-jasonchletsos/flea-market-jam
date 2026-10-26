@@ -31,7 +31,7 @@
   function unlock() {
     $("gatemsg").textContent = "Checking...";
     call("/check").then(function () {
-      $("gate").hidden = true; $("app").hidden = false; renderQueue();
+      $("gate").hidden = true; $("app").hidden = false; $("dock").hidden = false; renderQueue();
     }).catch(function (e) {
       localStorage.removeItem("jam.pass");
       $("gatemsg").textContent = e.status === 401 ? "That passcode is not right." : (e.message || "Could not reach the scanner.");
@@ -62,17 +62,30 @@
   }
   function drawThumbs() {
     $("thumbs").innerHTML = photos.map(function (p, i) {
-      return '<img alt="photo ' + (i + 1) + '" src="data:image/jpeg;base64,' + p + '">';
+      return '<button class="thumb" data-rmphoto="' + i + '" aria-label="Remove photo ' + (i + 1) + '">' +
+        '<img alt="photo ' + (i + 1) + '" src="data:image/jpeg;base64,' + p + '"></button>';
     }).join("");
+    $("photocount").textContent = photos.length ? photos.length + " of 4 added" : "none yet, up to 4";
     $("run").disabled = photos.length < 1;
   }
-  $("pick").addEventListener("change", function (e) {
-    var files = Array.prototype.slice.call(e.target.files).slice(0, 4);
-    $("runmsg").textContent = "Preparing photos...";
-    Promise.all(files.map(toJpeg)).then(function (list) {
-      photos = list; drawThumbs(); $("runmsg").textContent = files.length > 4 ? "Using the first 4 photos." : "";
-    }).catch(function () { $("runmsg").textContent = "Could not read one of the photos."; });
+  $("thumbs").addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-rmphoto]");
+    if (!b) return;
+    photos.splice(Number(b.getAttribute("data-rmphoto")), 1); drawThumbs();
   });
+  // Photos add up one tap at a time, so a single hand can build the set.
+  function addFiles(e) {
+    var room = 4 - photos.length;
+    var files = Array.prototype.slice.call(e.target.files).slice(0, Math.max(room, 0));
+    e.target.value = "";
+    if (!files.length) { $("runmsg").textContent = room <= 0 ? "That is 4 photos. Tap one to remove it." : ""; return; }
+    $("runmsg").textContent = "Preparing photo...";
+    Promise.all(files.map(toJpeg)).then(function (list) {
+      photos = photos.concat(list).slice(0, 4); drawThumbs(); $("runmsg").textContent = "";
+    }).catch(function () { $("runmsg").textContent = "Could not read that photo. Try again."; });
+  }
+  $("shoot").addEventListener("change", addFiles);
+  $("pick").addEventListener("change", addFiles);
   function tip() { $("tip").textContent = TIPS[$("cat").value]; }
   $("cat").addEventListener("change", tip); tip();
 
@@ -118,7 +131,7 @@
       copyBox("Description", r.description) + '</div>' +
       '<div class="card"><label for="ask">Your asking price (dollars)</label><input id="ask" type="number" min="0" step="1" value="' + mid + '">' +
       '<label for="ttl">Title to keep</label><input id="ttl" type="text" value="' + esc(r.ebay_title) + '">' +
-      '<div class="row" style="margin-top:12px"><button class="primary" id="add">Add to publish queue</button><span class="muted" id="addmsg"></span></div></div>';
+      '<div class="row" style="margin-top:12px"><button class="bigbtn" id="add">Add to publish queue</button><span class="muted" id="addmsg"></span></div></div>';
     $("result").scrollIntoView({ behavior: "smooth" });
   }
   $("result").addEventListener("click", function (e) {
@@ -160,7 +173,7 @@
     var item = { id: String(Date.now()), fields: fields, images: photos.slice(0, 3), include: true };
     tx("readwrite", function (s) { return s.put(item); }).then(function () {
       $("addmsg").textContent = "Added."; renderQueue();
-      $("result").innerHTML = ""; photos = []; drawThumbs(); $("pick").value = ""; $("notes").value = "";
+      $("result").innerHTML = ""; photos = []; drawThumbs(); $("notes").value = "";
     });
   }
   function getQueue() { return tx("readonly", function (s) { return s.getAll(); }); }
@@ -170,7 +183,7 @@
       $("queue").innerHTML = items.length ? items.map(function (it) {
         return '<div class="card"><div class="row"><div style="flex:1"><strong>' + esc(it.fields.title || it.fields.item_name) + '</strong><br>' +
           '<span class="muted">asking $' + esc(it.fields.asking_price) + ' &middot; ' + it.images.length + ' photo(s)</span></div>' +
-          '<button data-rm="' + esc(it.id) + '">Remove</button></div></div>';
+          '<button class="bigbtn alt" data-rm="' + esc(it.id) + '">Remove</button></div></div>';
       }).join("") : '<p class="muted">Nothing queued yet.</p>';
       $("publish").disabled = !items.length;
     });

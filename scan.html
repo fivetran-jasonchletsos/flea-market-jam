@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Scanner: identify and price an item</title>
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b2a63">
 </head>
 <body>
 <header class="site"><div class="in">
@@ -16,6 +18,7 @@
 <div class="stripe"></div>
 <main>
 <h1>Scanner</h1>
+<p class="muted">Tip: in Chrome, open the menu and choose Add to Home screen, so this opens with one tap.</p>
 <p>Take 1 to 4 photos of an item. The scanner suggests what it is, a price range, and draft listings for eBay, Etsy and Marketplace. The price is an AI estimate, not live sales data. Always check it against sold listings using the links in the results.</p>
 
 <div class="card" id="gate">
@@ -36,12 +39,15 @@
 <option value="other">Something else</option>
 </select>
 <div id="tip" class="note"></div>
-<label for="pick">Photos (1 to 4)</label>
-<input id="pick" type="file" accept="image/*" multiple>
+<p><strong>Photos</strong> <span class="muted" id="photocount">none yet, up to 4</span></p>
+<label class="bigbtn" for="shoot">Take a photo</label>
+<input class="filebtn" id="shoot" type="file" accept="image/*" capture="environment">
+<label class="bigbtn alt" for="pick">Choose photos from phone</label>
+<input class="filebtn" id="pick" type="file" accept="image/*" multiple>
+<p class="muted">Tap a photo below to remove it.</p>
 <div class="thumbs" id="thumbs"></div>
 <label for="notes">Notes (optional)</label>
-<textarea id="notes" placeholder="Size, marks you can read, flaws you see. Do not put your address or where you bought it."></textarea>
-<div class="row" style="margin-top:12px"><button class="go" id="run" disabled>Identify and price</button><span class="muted" id="runmsg"></span></div>
+<textarea id="notes" placeholder="Tap here, then tap the microphone on your keyboard to speak. Size, marks, flaws. No address."></textarea>
 </div>
 
 <div id="result"></div>
@@ -49,9 +55,14 @@
 <h2>Ready to publish</h2>
 <p class="muted">Items you add wait here on this device. Publishing adds them to the public Inventory page in one batch, up to 8 at a time, with up to 3 photos each.</p>
 <div id="queue"></div>
-<div class="row"><button class="primary" id="publish" disabled>Publish queued items</button><span class="muted" id="pubmsg"></span></div>
+<button class="bigbtn" id="publish" disabled>Publish queued items</button>
+<p class="muted" id="pubmsg"></p>
 </div>
 </main>
+<div class="dock" id="dock" hidden>
+<span class="muted" id="runmsg"></span>
+<button class="bigbtn go" id="run" disabled>Identify and price</button>
+</div>
 <footer>Prices and identifications are estimates. Confirm marks, metals and age before you list anything.</footer>
 <script src="config.js"></script>
 <script src="scan.js"></script>

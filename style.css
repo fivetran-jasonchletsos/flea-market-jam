@@ -74,3 +74,22 @@ footer{max-width:980px;margin:0 auto;padding:18px;color:var(--muted);font-size:.
   .card,.note,.warn{background:#fff;border-color:#888;border-left-color:#888}
   a{color:#000}
 }
+
+/* One-handed use: large targets, main actions at the bottom where a thumb reaches */
+body{font-size:19px;padding-bottom:96px}
+header.site a{padding:10px 6px;display:inline-block}
+.bigbtn{display:block;width:100%;min-height:60px;margin:10px 0;padding:14px 18px;border:3px solid var(--navy);border-radius:12px;background:var(--navy);color:#fff;font:700 1.15rem system-ui,sans-serif;text-align:center;cursor:pointer}
+.bigbtn.alt{background:#fff;color:var(--navy)}
+.bigbtn.go{background:var(--green);border-color:var(--green)}
+.bigbtn:disabled{opacity:.45}
+.filebtn{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.filebtn:focus+label,.bigbtn:focus-visible{outline:4px solid var(--orange);outline-offset:2px}
+.thumb{padding:0;border:3px solid var(--line);border-radius:10px;background:#fff;min-width:0}
+.thumb img{width:120px;height:120px;display:block;border:0}
+select,textarea,input[type=text],input[type=password],input[type=number]{min-height:56px;font-size:1.05rem}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(255,253,247,.97);border-top:4px solid var(--gold);padding:8px 14px calc(8px + env(safe-area-inset-bottom))}
+.dock .bigbtn{margin:4px 0}
+.dock .muted{display:block;min-height:1.2em;text-align:center}
+.inv .it,.grid a.card{min-height:56px}
+dialog button{min-height:56px}
+@media (max-width:600px){main{padding:16px 12px 40px}h1{font-size:1.7rem}}
