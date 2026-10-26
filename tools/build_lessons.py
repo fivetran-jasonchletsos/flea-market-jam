@@ -135,7 +135,7 @@ page("ebay", "Selling on eBay in the US",
 page("etsy", "Selling on Etsy",
      "Etsy fees, the vintage rule, listing limits and what not to list.",
 """
-""" + CHECK.format("I could not open Etsy's own help pages while researching this, so the numbers below come from seller guides and blogs. Read Etsy's fee and policy pages in a browser before you open a shop: <a href=\"https://help.etsy.com/hc/en-us/articles/115015628347\">fees</a>, <a href=\"https://www.etsy.com/legal/prohibited/\">prohibited items</a>, <a href=\"https://www.etsy.com/legal/handmade/\">creativity standards</a>.") + """
+""" + CHECK.format("Etsy's own help pages could not be read when this lesson was written, so the numbers below come from seller guides and blogs. Read Etsy's fee and policy pages in a browser before you open a shop: <a href=\"https://help.etsy.com/hc/en-us/articles/115015628347\">fees</a>, <a href=\"https://www.etsy.com/legal/prohibited/\">prohibited items</a>, <a href=\"https://www.etsy.com/legal/handmade/\">creativity standards</a>.") + """
 <h2>Fees as reported</h2>
 <ul>
 <li>Listing fee: 0.20 dollars per listing.</li>
@@ -170,7 +170,7 @@ page("etsy", "Selling on Etsy",
 page("marketplace", "Selling on Facebook Marketplace",
      "Fees, shipping, payout timing, scams and safe local meetups.",
 """
-""" + CHECK.format("Facebook's help pages could not be read while researching this. Fees came from a seller guide, so confirm them in the app before you list.") + """
+""" + CHECK.format("Facebook's help pages could not be read when this lesson was written. The fees came from a seller guide, so confirm them in the app before you list.") + """
 <h2>Fees as reported</h2>
 <ul>
 <li>Local sale where the buyer pays you directly: no selling fee.</li>
