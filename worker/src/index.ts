@@ -20,7 +20,7 @@ const CATEGORY_GUIDE: Record<Category, string> = {
 
 interface Env {
   ANTHROPIC_API_KEY: string;
-  PASSCODE: string;
+  PASSCODE?: string;
   GITHUB_TOKEN: string;
   LIMITS: KVNamespace;
   ALLOWED_ORIGIN: string;
@@ -28,6 +28,8 @@ interface Env {
   GH_BRANCH: string;
   DAILY_IDENTIFY_CAP: string;
   DAILY_PUBLISH_CAP: string;
+  PER_VISITOR_IDENTIFY_CAP: string;
+  PER_VISITOR_PUBLISH_CAP: string;
 }
 
 const SCHEMA = {
@@ -162,6 +164,10 @@ function cleanResult(r: Record<string, unknown>): Record<string, unknown> {
   };
 }
 
+function visitor(req: Request): string {
+  return req.headers.get("cf-connecting-ip") ?? "unknown";
+}
+
 async function identify(req: Request, env: Env): Promise<Response> {
   const body = (await req.json().catch(() => null)) as {
     category?: string;
@@ -177,6 +183,9 @@ async function identify(req: Request, env: Env): Promise<Response> {
   for (const img of body.images) {
     const problem = checkJpeg(img);
     if (problem) return json(env, { error: problem }, 400);
+  }
+  if (!(await bump(env, `identify-ip:${visitor(req)}`, Number(env.PER_VISITOR_IDENTIFY_CAP)))) {
+    return json(env, { error: "you have reached today's scan limit, try again tomorrow" }, 429);
   }
   if (!(await bump(env, "identify", Number(env.DAILY_IDENTIFY_CAP)))) {
     return json(env, { error: "daily scan limit reached, try again tomorrow" }, 429);
@@ -208,10 +217,13 @@ async function identify(req: Request, env: Env): Promise<Response> {
     const text = res.content.find((b) => b.type === "text");
     if (!text || text.type !== "text") return json(env, { error: "no result returned" }, 502);
     const parsed = JSON.parse(text.text) as Record<string, unknown>;
-    return json(env, { result: cleanResult(parsed), category });
+    const u = res.usage;
+    console.log(JSON.stringify({ evt: "identify_ok", model: res.model, input: u.input_tokens, output: u.output_tokens }));
+    return json(env, { result: cleanResult(parsed), category, usage: { input: u.input_tokens, output: u.output_tokens, model: res.model } });
   } catch (e) {
     console.error(JSON.stringify({ evt: "identify_failed", msg: e instanceof Error ? e.message : String(e) }));
-    return json(env, { error: "identification failed, try again" }, 502);
+    const why = e instanceof Error ? e.message.slice(0, 160) : "unknown";
+    return json(env, { error: "identification failed, try again", detail: why }, 502);
   }
 }
 
@@ -273,6 +285,9 @@ async function publish(req: Request, env: Env): Promise<Response> {
       const problem = checkJpeg(img);
       if (problem) return json(env, { error: problem }, 400);
     }
+  }
+  if (!(await bump(env, `publish-ip:${visitor(req)}`, Number(env.PER_VISITOR_PUBLISH_CAP)))) {
+    return json(env, { error: "you have reached today's publish limit" }, 429);
   }
   if (!(await bump(env, "publish", Number(env.DAILY_PUBLISH_CAP)))) {
     return json(env, { error: "daily publish limit reached" }, 429);
@@ -342,7 +357,8 @@ async function publish(req: Request, env: Env): Promise<Response> {
     return json(env, { ok: true, commit: commit.sha, count: items.length });
   } catch (e) {
     console.error(JSON.stringify({ evt: "publish_failed", msg: e instanceof Error ? e.message : String(e) }));
-    return json(env, { error: "publish failed, try again" }, 502);
+    const why = e instanceof Error ? e.message.slice(0, 160) : "unknown";
+    return json(env, { error: "publish failed, try again", detail: why }, 502);
   }
 }
 
@@ -353,19 +369,20 @@ export default {
     if (req.method !== "POST") return json(env, { error: "not found" }, 404);
     if (req.headers.get("origin") !== env.ALLOWED_ORIGIN) return json(env, { error: "forbidden" }, 403);
 
-    // Fail closed: with no passcode configured, nobody gets in.
-    if (!env.PASSCODE || !env.ANTHROPIC_API_KEY || !env.GITHUB_TOKEN) {
+    // The service needs its two upstream keys. The passcode is optional: when unset, the gate is open
+    // and the daily caps and the per-visitor caps below are the only limits.
+    if (!env.ANTHROPIC_API_KEY || !env.GITHUB_TOKEN) {
       return json(env, { error: "service is not configured" }, 503);
     }
-
-    // Throttle wrong guesses per IP so a passcode cannot be brute-forced.
-    const ip = req.headers.get("cf-connecting-ip") ?? "unknown";
-    const given = req.headers.get("x-passcode") ?? "";
-    if (!(await sameSecret(given, env.PASSCODE))) {
-      const k = `fail:${ip}:${today()}`;
-      const n = Number((await env.LIMITS.get(k)) ?? "0") + 1;
-      await env.LIMITS.put(k, String(n), { expirationTtl: 86400 });
-      return json(env, { error: "unauthorized" }, n > 20 ? 429 : 401);
+    if (env.PASSCODE) {
+      const given = req.headers.get("x-passcode") ?? "";
+      if (!(await sameSecret(given, env.PASSCODE))) {
+        const ip = req.headers.get("cf-connecting-ip") ?? "unknown";
+        const k = `fail:${ip}:${today()}`;
+        const n = Number((await env.LIMITS.get(k)) ?? "0") + 1;
+        await env.LIMITS.put(k, String(n), { expirationTtl: 86400 });
+        return json(env, { error: "unauthorized" }, n > 20 ? 429 : 401);
+      }
     }
 
     if (url.pathname === "/identify") return identify(req, env);

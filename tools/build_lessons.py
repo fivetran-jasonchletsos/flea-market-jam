@@ -13,14 +13,16 @@ TEMPLATE = """<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="site"><div class="in">
 <a class="home" href="index.html">Flea Market Jam</a>
-{nav}
+<nav>{nav}</nav>
 </div></header>
-<div class="stripe"></div>
 <main>
 <p class="muted"><a href="lessons.html">All lessons</a></p>
 <h1>{title}</h1>
@@ -28,6 +30,7 @@ TEMPLATE = """<!doctype html>
 <div class="row noprint" style="margin-top:28px">{prev}{next}</div>
 </main>
 <footer>Fees, policies and laws change. Where this page says to check, open the linked official page before you act. This is general information, not legal or tax advice.</footer>
+<nav class="tabbar" aria-label="Main"><a href="scan.html">Scan</a><a href="inventory.html">Inventory</a><a href="lessons.html" aria-current="page">Lessons</a></nav>
 </body>
 </html>
 """

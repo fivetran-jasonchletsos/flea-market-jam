@@ -14,12 +14,11 @@
     });
   }
 
-  // ---- passcode gate ----
-  function pass() { return localStorage.getItem("jam.pass") || ""; }
+  // ---- service calls ----
   function call(path, body) {
     return fetch(API + path, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-passcode": pass() },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify(body || {})
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
@@ -28,20 +27,8 @@
       });
     });
   }
-  function unlock() {
-    $("gatemsg").textContent = "Checking...";
-    call("/check").then(function () {
-      $("gate").hidden = true; $("app").hidden = false; $("dock").hidden = false; renderQueue();
-    }).catch(function (e) {
-      localStorage.removeItem("jam.pass");
-      $("gatemsg").textContent = e.status === 401 ? "That passcode is not right." : (e.message || "Could not reach the scanner.");
-    });
-  }
-  $("unlock").addEventListener("click", function () {
-    localStorage.setItem("jam.pass", $("pass").value); unlock();
-  });
-  if (!API) { $("gatemsg").textContent = "The scanner service is not connected yet."; $("unlock").disabled = true; }
-  else if (pass()) unlock();
+  if (!API) { $("runmsg").textContent = "The scanner service is not connected yet."; }
+  renderQueue();
 
   // ---- photos: resize and re-encode in the browser, which also removes location data ----
   var photos = []; // base64 jpeg strings, no prefix

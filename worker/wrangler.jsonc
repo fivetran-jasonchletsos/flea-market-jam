@@ -10,7 +10,9 @@
     "GH_REPO": "fivetran-jasonchletsos/flea-market-jam",
     "GH_BRANCH": "main",
     "DAILY_IDENTIFY_CAP": "60",
-    "DAILY_PUBLISH_CAP": "10"
+    "DAILY_PUBLISH_CAP": "10",
+    "PER_VISITOR_IDENTIFY_CAP": "20",
+    "PER_VISITOR_PUBLISH_CAP": "4"
   },
   "kv_namespaces": [{ "binding": "LIMITS" }]
 }

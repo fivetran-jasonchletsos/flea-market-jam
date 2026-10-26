@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Scanner: identify and price an item</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b2a63">
@@ -11,24 +14,14 @@
 <body>
 <header class="site"><div class="in">
 <a class="home" href="index.html">Flea Market Jam</a>
-<a href="scan.html" aria-current="page">Scanner</a>
-<a href="inventory.html">Inventory</a>
-<a href="lessons.html">Lessons</a>
+<nav><a href="scan.html" aria-current="page">Scanner</a><a href="inventory.html">Inventory</a><a href="lessons.html">Lessons</a></nav>
 </div></header>
-<div class="stripe"></div>
 <main>
 <h1>Scanner</h1>
 <p class="muted">Tip: in Chrome, open the menu and choose Add to Home screen, so this opens with one tap.</p>
 <p>Take 1 to 4 photos of an item. The scanner suggests what it is, a price range, and draft listings for eBay, Etsy and Marketplace. The price is an AI estimate, not live sales data. Always check it against sold listings using the links in the results.</p>
 
-<div class="card" id="gate">
-<label for="pass">Passcode</label>
-<input id="pass" type="password" autocomplete="current-password" placeholder="Ask whoever set this up">
-<button class="bigbtn" id="unlock">Unlock</button>
-<p class="muted" id="gatemsg"></p>
-</div>
-
-<div id="app" hidden>
+<div id="app">
 <div class="warn"><strong>Photos you publish are public.</strong> Anyone can see them on the Inventory page. Before you shoot, move mail, family photos, windows showing your street, and anything with your address out of the frame. Location data is stripped from every photo automatically.</div>
 
 <div class="card">
@@ -60,12 +53,13 @@
 <p class="muted" id="pubmsg"></p>
 </div>
 </main>
-<div class="dock" id="dock" hidden>
+<div class="dock" id="dock">
 <span class="muted" id="runmsg"></span>
 <button class="bigbtn go" id="run" disabled>Identify and price</button>
 </div>
 <footer>Prices and identifications are estimates. Confirm marks, metals and age before you list anything.</footer>
 <script src="config.js"></script>
 <script src="scan.js"></script>
+<nav class="tabbar" aria-label="Main"><a href="scan.html" aria-current="page">Scan</a><a href="inventory.html">Inventory</a><a href="lessons.html">Lessons</a></nav>
 </body>
 </html>
