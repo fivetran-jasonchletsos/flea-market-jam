@@ -1,2 +1,2 @@
-// Address of the scanner service. Updated after the Worker is deployed.
-window.JAM = { api: "" };
+// Address of the scanner service.
+window.JAM = { api: "https://flea-market-jam.jasonchletsos.workers.dev" };

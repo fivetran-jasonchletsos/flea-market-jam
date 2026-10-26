@@ -353,6 +353,11 @@ export default {
     if (req.method !== "POST") return json(env, { error: "not found" }, 404);
     if (req.headers.get("origin") !== env.ALLOWED_ORIGIN) return json(env, { error: "forbidden" }, 403);
 
+    // Fail closed: with no passcode configured, nobody gets in.
+    if (!env.PASSCODE || !env.ANTHROPIC_API_KEY || !env.GITHUB_TOKEN) {
+      return json(env, { error: "service is not configured" }, 503);
+    }
+
     // Throttle wrong guesses per IP so a passcode cannot be brute-forced.
     const ip = req.headers.get("cf-connecting-ip") ?? "unknown";
     const given = req.headers.get("x-passcode") ?? "";
