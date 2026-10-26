@@ -54,6 +54,8 @@
     }).join("");
     $("photocount").textContent = photos.length ? photos.length + " of 4 added" : "none yet, up to 4";
     $("run").disabled = photos.length < 1;
+    $("dock").hidden = photos.length < 1;
+    document.body.classList.toggle("has-dock", photos.length > 0);
   }
   $("thumbs").addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-rmphoto]");
