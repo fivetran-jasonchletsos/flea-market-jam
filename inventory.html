@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inventory</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site"><div class="in">
+<a class="home" href="index.html">Flea Market Jam</a>
+<a href="scan.html">Scanner</a>
+<a href="inventory.html" aria-current="page">Inventory</a>
+<a href="lessons.html">Lessons</a>
+</div></header>
+<div class="stripe"></div>
+<main>
+<h1>Inventory</h1>
+<p class="muted">Items that have been scanned and published. Prices are AI estimates to check against sold listings.</p>
+<div class="row noprint">
+<select id="filter" style="max-width:240px"><option value="">All categories</option><option value="cobalt-glass">Cobalt blue glass</option><option value="jewelry">Jewelry</option><option value="antique">Antiques</option><option value="other">Other</option></select>
+<button id="csv">Download CSV</button>
+</div>
+<p id="total" class="muted"></p>
+<div class="inv" id="grid"></div>
+<dialog id="dlg"><div id="dbody"></div><div class="row" style="margin-top:12px"><button id="close">Close</button></div></dialog>
+</main>
+<footer>Estimates only. Check sold listings before pricing.</footer>
+<script src="inventory.js"></script>
+</body>
+</html>

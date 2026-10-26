@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "flea-market-jam",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "vars": {
+    "ALLOWED_ORIGIN": "https://fivetran-jasonchletsos.github.io",
+    "GH_REPO": "fivetran-jasonchletsos/flea-market-jam",
+    "GH_BRANCH": "main",
+    "DAILY_IDENTIFY_CAP": "60",
+    "DAILY_PUBLISH_CAP": "10"
+  },
+  "kv_namespaces": [{ "binding": "LIMITS" }]
+}

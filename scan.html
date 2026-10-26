@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scanner: identify and price an item</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site"><div class="in">
+<a class="home" href="index.html">Flea Market Jam</a>
+<a href="scan.html" aria-current="page">Scanner</a>
+<a href="inventory.html">Inventory</a>
+<a href="lessons.html">Lessons</a>
+</div></header>
+<div class="stripe"></div>
+<main>
+<h1>Scanner</h1>
+<p>Take 1 to 4 photos of an item. The scanner suggests what it is, a price range, and draft listings for eBay, Etsy and Marketplace. The price is an AI estimate, not live sales data. Always check it against sold listings using the links in the results.</p>
+
+<div class="card" id="gate">
+<label for="pass">Passcode</label>
+<input id="pass" type="password" autocomplete="current-password" placeholder="Ask whoever set this up">
+<div class="row" style="margin-top:10px"><button class="primary" id="unlock">Unlock</button><span class="muted" id="gatemsg"></span></div>
+</div>
+
+<div id="app" hidden>
+<div class="warn"><strong>Photos you publish are public.</strong> Anyone can see them on the Inventory page. Before you shoot, move mail, family photos, windows showing your street, and anything with your address out of the frame. Location data is stripped from every photo automatically.</div>
+
+<div class="card">
+<label for="cat">What is it?</label>
+<select id="cat">
+<option value="cobalt-glass">Cobalt blue glass</option>
+<option value="jewelry">Jewelry</option>
+<option value="antique">Antique or vintage item</option>
+<option value="other">Something else</option>
+</select>
+<div id="tip" class="note"></div>
+<label for="pick">Photos (1 to 4)</label>
+<input id="pick" type="file" accept="image/*" multiple>
+<div class="thumbs" id="thumbs"></div>
+<label for="notes">Notes (optional)</label>
+<textarea id="notes" placeholder="Size, marks you can read, flaws you see. Do not put your address or where you bought it."></textarea>
+<div class="row" style="margin-top:12px"><button class="go" id="run" disabled>Identify and price</button><span class="muted" id="runmsg"></span></div>
+</div>
+
+<div id="result"></div>
+
+<h2>Ready to publish</h2>
+<p class="muted">Items you add wait here on this device. Publishing adds them to the public Inventory page in one batch, up to 8 at a time, with up to 3 photos each.</p>
+<div id="queue"></div>
+<div class="row"><button class="primary" id="publish" disabled>Publish queued items</button><span class="muted" id="pubmsg"></span></div>
+</div>
+</main>
+<footer>Prices and identifications are estimates. Confirm marks, metals and age before you list anything.</footer>
+<script src="config.js"></script>
+<script src="scan.js"></script>
+</body>
+</html>
